@@ -1,15 +1,22 @@
 import React, { useContext } from 'react';
-import headers from '../data';
+import { headers } from '../data';
 import SearchPlanetsContext from '../context/SearchPlanetsContext';
 
 export default function Table() {
   const { data: { results = [] },
-    filters: { filterByName: { name: filterName },
-    } } = useContext(SearchPlanetsContext);
-  console.log(filterName);
-  console.log(results[0]);
-  const planets = (filterName) ? results.filter(({ name }) => name.includes(filterName))
-    : results;
+    filters,
+    applyFilters,
+  } = useContext(SearchPlanetsContext);
+  let planets = (filters.filterByName.name)
+    ? results.filter(({ name }) => name.includes(filters.filterByName.name)) : results;
+  if (applyFilters) {
+    const { column, comparison, value } = filters.filterByNumericValues[0];
+    planets = planets.filter((planet) => {
+      if (comparison === 'maior que') return Number(planet[column]) > Number(value);
+      if (comparison === 'menor que') return Number(planet[column]) < Number(value);
+      return Number(planet[column]) === Number(value);
+    });
+  }
   return (
     <table>
       <thead>
