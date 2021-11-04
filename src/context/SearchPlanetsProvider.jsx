@@ -5,6 +5,11 @@ import getPlanets from '../services/starWarsPlanetsApi';
 
 export default function SearchPlanetsProvider({ children }) {
   const [data, setData] = useState({});
+  const [filters, setFilters] = useState({
+    filterByName: {
+      name: '',
+    },
+  });
   useEffect(() => {
     async function fetchMyAPI() {
       const results = await getPlanets();
@@ -15,7 +20,7 @@ export default function SearchPlanetsProvider({ children }) {
   }, []);
 
   return (
-    <SearchPlanetsContext.Provider value={ { data, setData } }>
+    <SearchPlanetsContext.Provider value={ { data, setData, filters, setFilters } }>
       { children }
     </SearchPlanetsContext.Provider>
   );
