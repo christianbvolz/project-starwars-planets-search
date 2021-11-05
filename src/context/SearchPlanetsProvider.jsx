@@ -2,19 +2,16 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import SearchPlanetsContext from './SearchPlanetsContext';
 import getPlanets from '../services/starWarsPlanetsApi';
+import { columnFilterOptions } from '../data';
 
 export default function SearchPlanetsProvider({ children }) {
   const [data, setData] = useState({});
-  const [applyFilters, setApplyFilters] = useState(false);
+  const [columnOptions, setColumnOptions] = useState(columnFilterOptions);
   const [filters, setFilters] = useState({
     filterByName: {
       name: '',
     },
-    filterByNumericValues: [{
-      column: 'population',
-      comparison: 'maior que',
-      value: '100000',
-    }],
+    filterByNumericValues: [],
   });
 
   useEffect(() => {
@@ -26,9 +23,10 @@ export default function SearchPlanetsProvider({ children }) {
     fetchMyAPI();
   }, []);
 
-  const context = { data, setData, filters, setFilters, applyFilters, setApplyFilters };
   return (
-    <SearchPlanetsContext.Provider value={ context }>
+    <SearchPlanetsContext.Provider
+      value={ { data, setData, filters, setFilters, columnOptions, setColumnOptions } }
+    >
       { children }
     </SearchPlanetsContext.Provider>
   );
