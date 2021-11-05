@@ -1,13 +1,15 @@
 import React, { useContext, useState } from 'react';
 import SearchPlanetsContext from '../context/SearchPlanetsContext';
-import { comparisonFilteroptions } from '../data';
+import { comparisonFilteroptions, headers } from '../data';
 
 export default function Filters() {
-  const { setFilters, filters, columnOptions, applyNumericFilters,
-  } = useContext(SearchPlanetsContext);
+  const { setFilters, filters, columnOptions,
+    applyNumericFilters, setOrder, order } = useContext(SearchPlanetsContext);
   const [column, setColumn] = useState('population');
   const [comparison, setComparison] = useState('maior que');
   const [value, setvalue] = useState('100000');
+  const [orderColumn, setOrderColumn] = useState('Name');
+  const [orderSort, setOrderSort] = useState('ASC');
   return (
     <div>
       <input
@@ -58,6 +60,47 @@ export default function Filters() {
         onClick={ () => applyNumericFilters({ column, comparison, value }) }
       >
         Filtrar
+      </button>
+      <select
+        data-testid="column-sort"
+        onChange={ ({ target }) => {
+          setOrderColumn(target.value);
+        } }
+        value={ orderColumn }
+      >
+        {headers.map((option) => (
+          <option value={ option } key={ option }>{ option }</option>
+        ))}
+      </select>
+      <label htmlFor="input-order">
+        Ascendente
+        <input
+          name="input-order"
+          checked={ orderSort === 'ASC' }
+          value="ASC"
+          type="radio"
+          data-testid="column-sort-input-asc"
+          onChange={ ({ target }) => {
+            setOrderSort(target.value);
+          } }
+        />
+        Descendente
+        <input
+          name="input-order"
+          value="DESC"
+          type="radio"
+          data-testid="column-sort-input-desc"
+          onChange={ ({ target }) => {
+            setOrderSort(target.value);
+          } }
+        />
+      </label>
+      <button
+        type="button"
+        data-testid="column-sort-button"
+        onClick={ () => setOrder({ ...order, column: orderColumn, sort: orderSort }) }
+      >
+        Ordernar
       </button>
     </div>
   );

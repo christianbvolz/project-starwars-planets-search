@@ -13,6 +13,10 @@ export default function SearchPlanetsProvider({ children }) {
     },
     filterByNumericValues: [],
   });
+  const [order, setOrder] = useState({
+    column: 'name',
+    sort: 'ASC',
+  });
   const { filterByName, filterByNumericValues } = filters;
 
   useEffect(() => {
@@ -59,6 +63,19 @@ export default function SearchPlanetsProvider({ children }) {
     });
   }
 
+  planets.sort((a, b) => {
+    const ONE = 1;
+    if (a.name < b.name) {
+      return -ONE;
+    }
+    if (a.name > b.name) {
+      return 1;
+    }
+    return 0;
+  });
+
+  // planets.sort((a, b) => Number(a.diameter) - Number(b.diameter));
+
   return (
     <SearchPlanetsContext.Provider
       value={ {
@@ -71,6 +88,8 @@ export default function SearchPlanetsProvider({ children }) {
         planets,
         applyNumericFilters,
         removeNumericFilter,
+        order,
+        setOrder,
       } }
     >
       { children }

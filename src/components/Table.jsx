@@ -18,9 +18,12 @@ export default function Table() {
             .filter((key) => key !== 'residents');
           return (
             <tr key={ planet.name }>
-              { planetsWithoutResidents.map((key) => (
-                <td key={ planet[key] }>{ planet[key] }</td>
-              )) }
+              { planetsWithoutResidents.map((key) => {
+                if (key !== 'name') return <td key={ planet[key] }>{ planet[key] }</td>;
+                return (
+                  <td data-testid="planet-name" key={ planet[key] }>{ planet[key] }</td>
+                );
+              }) }
             </tr>
           );
         })}
