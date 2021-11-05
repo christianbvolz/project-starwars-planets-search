@@ -3,23 +3,7 @@ import { headers } from '../data';
 import SearchPlanetsContext from '../context/SearchPlanetsContext';
 
 export default function Table() {
-  const {
-    data: { results = [] },
-    filters: { filterByName, filterByNumericValues },
-  } = useContext(SearchPlanetsContext);
-
-  let planets = (filterByName.name)
-    ? results.filter(({ name }) => name.includes(filterByName.name)) : results;
-
-  if (filterByNumericValues.length !== 0) {
-    filterByNumericValues.forEach(({ column, comparison, value }) => {
-      planets = planets.filter((planet) => {
-        if (comparison === 'maior que') return Number(planet[column]) > Number(value);
-        if (comparison === 'menor que') return Number(planet[column]) < Number(value);
-        return Number(planet[column]) === Number(value);
-      });
-    });
-  }
+  const { planets } = useContext(SearchPlanetsContext);
 
   return (
     <table>
@@ -29,37 +13,17 @@ export default function Table() {
         </tr>
       </thead>
       <tbody>
-        { planets.map(({
-          name,
-          rotation_period: retationPeriod,
-          orbital_period: orbitalPeriod,
-          diameter,
-          climate,
-          gravity,
-          terrain,
-          surface_water: surfaceWater,
-          population,
-          films,
-          created,
-          edited,
-          url,
-        }) => (
-          <tr key={ name }>
-            <td>{ name }</td>
-            <td>{ retationPeriod }</td>
-            <td>{ orbitalPeriod }</td>
-            <td>{ diameter }</td>
-            <td>{ climate }</td>
-            <td>{ gravity }</td>
-            <td>{ terrain }</td>
-            <td>{ surfaceWater }</td>
-            <td>{ population }</td>
-            <td>{ films }</td>
-            <td>{ created }</td>
-            <td>{ edited }</td>
-            <td>{ url }</td>
-          </tr>
-        ))}
+        { planets.map((planet) => {
+          const planetsWithoutResidents = Object.keys(planet)
+            .filter((key) => key !== 'residents');
+          return (
+            <tr key={ planet.name }>
+              { planetsWithoutResidents.map((key) => (
+                <td key={ planet[key] }>{ planet[key] }</td>
+              )) }
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );

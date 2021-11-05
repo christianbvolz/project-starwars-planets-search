@@ -5,7 +5,7 @@ import getPlanets from '../services/starWarsPlanetsApi';
 import { columnFilterOptions } from '../data';
 
 export default function SearchPlanetsProvider({ children }) {
-  const [data, setData] = useState({});
+  const [data, setData] = useState({ results: [] });
   const [columnOptions, setColumnOptions] = useState(columnFilterOptions);
   const [filters, setFilters] = useState({
     filterByName: {
@@ -13,6 +13,7 @@ export default function SearchPlanetsProvider({ children }) {
     },
     filterByNumericValues: [],
   });
+  const { filterByName, filterByNumericValues } = filters;
 
   useEffect(() => {
     async function fetchMyAPI() {
@@ -23,9 +24,54 @@ export default function SearchPlanetsProvider({ children }) {
     fetchMyAPI();
   }, []);
 
+  const applyNumericFilters = ({ column, comparison, value }) => {
+    const newColumnOptions = columnOptions.filter((option) => option !== column);
+    setColumnOptions(newColumnOptions);
+    setFilters({
+      ...filters,
+      filterByNumericValues: [
+        ...filters.filterByNumericValues, { column, comparison, value }],
+    });
+  };
+
+  const removeNumericFilter = (column) => {
+    const newColumnOptions = [...columnOptions, column];
+    setColumnOptions(newColumnOptions);
+    const newFilterByNumericValues = filterByNumericValues
+      .filter((filterObj) => filterObj.column !== column);
+    setFilters({
+      ...filters,
+      filterByNumericValues: [
+        ...newFilterByNumericValues],
+    });
+  };
+
+  let planets = (filterByName.name)
+    ? data.results.filter(({ name }) => name.includes(filterByName.name)) : data.results;
+
+  if (filterByNumericValues.length !== 0) {
+    filterByNumericValues.forEach(({ column, comparison, value }) => {
+      planets = planets.filter((planet) => {
+        if (comparison === 'maior que') return Number(planet[column]) > Number(value);
+        if (comparison === 'menor que') return Number(planet[column]) < Number(value);
+        return Number(planet[column]) === Number(value);
+      });
+    });
+  }
+
   return (
     <SearchPlanetsContext.Provider
-      value={ { data, setData, filters, setFilters, columnOptions, setColumnOptions } }
+      value={ {
+        data,
+        setData,
+        filters,
+        setFilters,
+        columnOptions,
+        setColumnOptions,
+        planets,
+        applyNumericFilters,
+        removeNumericFilter,
+      } }
     >
       { children }
     </SearchPlanetsContext.Provider>

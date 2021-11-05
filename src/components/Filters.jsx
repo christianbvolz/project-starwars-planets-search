@@ -3,7 +3,7 @@ import SearchPlanetsContext from '../context/SearchPlanetsContext';
 import { comparisonFilteroptions } from '../data';
 
 export default function Filters() {
-  const { setFilters, filters, columnOptions, setColumnOptions,
+  const { setFilters, filters, columnOptions, applyNumericFilters,
   } = useContext(SearchPlanetsContext);
   const [column, setColumn] = useState('population');
   const [comparison, setComparison] = useState('maior que');
@@ -55,15 +55,7 @@ export default function Filters() {
       <button
         type="button"
         data-testid="button-filter"
-        onClick={ () => {
-          const newColumnOptions = columnOptions.filter((option) => option !== column);
-          setColumnOptions(newColumnOptions);
-          setFilters({
-            ...filters,
-            filterByNumericValues: [
-              ...filters.filterByNumericValues, { column, comparison, value }],
-          });
-        } }
+        onClick={ () => applyNumericFilters({ column, comparison, value }) }
       >
         Filtrar
       </button>
