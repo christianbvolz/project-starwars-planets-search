@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import SearchPlanetsContext from './SearchPlanetsContext';
 import getPlanets from '../services/starWarsPlanetsApi';
 import { columnFilterOptions } from '../data';
+import sortPlanets from '../utilities';
 
 export default function SearchPlanetsProvider({ children }) {
   const [data, setData] = useState({ results: [] });
@@ -63,19 +64,9 @@ export default function SearchPlanetsProvider({ children }) {
     });
   }
 
-  planets.sort((a, b) => {
-    const ONE = 1;
-    if (a.name < b.name) {
-      return -ONE;
-    }
-    if (a.name > b.name) {
-      return 1;
-    }
-    return 0;
-  });
-
-  // planets.sort((a, b) => Number(a.diameter) - Number(b.diameter));
-
+  if (planets.length !== 0) {
+    planets = sortPlanets(planets, order);
+  }
   return (
     <SearchPlanetsContext.Provider
       value={ {

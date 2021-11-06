@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import SearchPlanetsContext from '../context/SearchPlanetsContext';
-import { comparisonFilteroptions, headers } from '../data';
+import { comparisonFilteroptions, orderOptions } from '../data';
 
 export default function Filters() {
   const { setFilters, filters, columnOptions,
@@ -68,7 +68,7 @@ export default function Filters() {
         } }
         value={ orderColumn }
       >
-        {headers.map((option) => (
+        {orderOptions.map((option) => (
           <option value={ option } key={ option }>{ option }</option>
         ))}
       </select>
